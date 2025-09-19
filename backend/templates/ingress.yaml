@@ -1,0 +1,42 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.app.name }}-ingress
+  annotations:
+    # 指定使用 nginx ingress controller
+    kubernetes.io/ingress.class: "nginx"
+    # HTTP 重定向到 HTTPS (只在有 TLS 憑證的情況下)
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # 強制 HTTP 重定向到 HTTPS (不論是否有 TLS 憑證)
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # 指定使用 cert-manager 的 ClusterIssuer (觸發自動申請證書)
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuer }}
+spec:
+  # 設定 TLS 憑證
+  tls:
+    - hosts:
+        - {{ .Values.ingress.domain }}
+      # 指定 secret name，cert-manager 會自動申請證書，並將證書存入 secret
+      secretName: {{ .Values.app.name }}-tls-secret
+  
+  rules:
+    - host: {{ .Values.ingress.domain }}
+      http:
+        paths:
+          # 健康檢查路由
+          - path: /health
+            pathType: Exact
+            backend:
+              service:
+                name: {{ .Values.service.name }}
+                port:
+                  number: {{ .Values.service.port }}
+          
+          # API 路由
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.service.name }}
+                port:
+                  number: {{ .Values.service.port }}

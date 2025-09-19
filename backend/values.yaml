@@ -1,0 +1,61 @@
+# =============================================================================
+# deployment.yaml
+# =============================================================================
+app:
+  name: api
+  replicas: 2
+image:
+  repository: ghcr.io/jian11442/cicd-learning-api
+  tag: 416eb384eeba49685e53c7de12eb693224eb5542
+  digest: "sha256:c5784e923643e38452c08447b7ca3d18175ea03e3e242846684de1b6ccfb12ac"
+imagePullSecrets:
+  name: ghcr-secret # *
+container:
+  name: api-container
+  port: 4004 # *
+strategy:
+  maxUnavailable: 1
+  maxSurge: 1
+# =============================================================================
+# service.yaml
+# =============================================================================
+service:
+  name: api-service # *
+  type: ClusterIP
+  port: 4004 # *
+  targetPort: 4004 # *
+# =============================================================================
+# secret.yaml
+# =============================================================================
+
+# AWS Credential
+awsCredentials:
+  name: aws-credentials # *
+  accessIdKey: access-key-id # *
+  accessSecretKey: secret-access-key # *
+# Secret Store
+secretStore:
+  name: aws-secrets-store
+  aws:
+    region: ap-northeast-1 # *
+# External Secret
+externalSecret:
+  name: api-secret
+  target:
+    name: api-secret
+    creationPolicy: Owner
+  dataFrom:
+    extract:
+      key: CICD_LEARNING_ENVS # *
+# =============================================================================
+# ingress.yaml
+# =============================================================================
+ingress:
+  enabled: true
+  domain: "api.157.230.194.44.nip.io" # *
+  clusterIssuer: "letsencrypt-staging" # *
+# =============================================================================
+# envs
+# =============================================================================
+envs:
+  ORIGIN_URL: "https://157.230.194.44.nip.io"
