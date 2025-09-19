@@ -42,11 +42,16 @@ spec:
           image: {{ if .Values.image.digest }}{{ .Values.image.repository }}@{{ .Values.image.digest }}{{ else }}{{ .Values.image.repository }}:{{ .Values.image.tag }}{{ end }}
           ports:
             - containerPort: {{ .Values.container.port }}
-          # 環境變量配置
+          # 環境變量配置（傳遞 external secret 中沒有的非機密環境變量）
           env:
-            # ORIGIN_URL 通過 Docker 鏡像中的 ENV 設置（保留）
             - name: ORIGIN_APP
               value: "{{ .Values.envs.ORIGIN_APP }}"
+            - name: API_PORT
+              value: "{{ .Values.envs.API_PORT }}"
+            - name: OFFICIAL_EMAIL
+              value: "{{ .Values.envs.OFFICIAL_EMAIL }}"
+            - name: TEST_EMAIL
+              value: "{{ .Values.envs.TEST_EMAIL }}"
           # 其他環境變量從 ExternalSecret 獲取
           envFrom:
             - secretRef:

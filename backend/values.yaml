@@ -58,4 +58,7 @@ ingress:
 # envs
 # =============================================================================
 envs:
-  ORIGIN_URL: "https://157.230.194.44.nip.io"
+  ORIGIN_APP: "https://157.230.194.44.nip.io"
+  API_PORT: 4004
+  OFFICIAL_EMAIL: "onboarding@resend.dev"
+  TEST_EMAIL: onboarding@resend.dev
