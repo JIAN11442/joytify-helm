@@ -5,9 +5,9 @@ app:
   name: api
   replicas: 2
 image:
-  repository: ghcr.io/jian11442/cicd-learning-api
-  tag: 416eb384eeba49685e53c7de12eb693224eb5542
-  digest: "sha256:c5784e923643e38452c08447b7ca3d18175ea03e3e242846684de1b6ccfb12ac"
+  repository: ghcr.io/jian11442/joytify-api
+  tag: f88a9a2e48beb68658b6a2d59f2c57c09ead7417
+  digest: "sha256:955b1576147b76171f3f34d6e43754165d3f75345c9b87a05eb59b6adf52d197"
 imagePullSecrets:
   name: ghcr-secret # *
 container:
@@ -46,19 +46,19 @@ externalSecret:
     creationPolicy: Owner
   dataFrom:
     extract:
-      key: CICD_LEARNING_ENVS # *
+      key: JOYTIFY_APPLICATION_ENVS # *
 # =============================================================================
 # ingress.yaml
 # =============================================================================
 ingress:
   enabled: true
-  domain: "api.157.230.194.44.nip.io" # *
+  domain: "api.146.190.193.154.nip.io" # *
   clusterIssuer: "letsencrypt-staging" # *
 # =============================================================================
 # envs
 # =============================================================================
 envs:
-  ORIGIN_APP: "https://157.230.194.44.nip.io"
+  ORIGIN_APP: "https://146.190.193.154.nip.io"
   API_PORT: 4004
-  OFFICIAL_EMAIL: "onboarding@resend.dev"
+  OFFICIAL_EMAIL:
   TEST_EMAIL: onboarding@resend.dev
