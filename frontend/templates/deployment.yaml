@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+
+# 基本資訊
+metadata:
+  name: {{ .Values.app.name }}
+
+# 部署配置
+spec:
+  # 副本數
+  replicas: {{ .Values.app.replicas }}
+
+  # 選擇器（選擇要部署的 pod）
+  selector:
+    matchLabels:
+      app: {{ .Values.app.name }}
+
+  # 部署策略（滾動更新）
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: {{ .Values.strategy.maxUnavailable }}
+      maxSurge: {{ .Values.strategy.maxSurge }}
+
+  # pod 模板（定義 pod 的配置）
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.name }}
+    spec:
+      {{- if .Values.imagePullSecrets.name }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets.name }}
+      {{- end }}
+
+      containers:
+        - name: {{ .Values.container.name }}
+          image: {{ if .Values.image.digest }}{{ .Values.image.repository }}@{{ .Values.image.digest }}{{ else }}{{ .Values.image.repository }}:{{ .Values.image.tag }}{{ end }}
+          ports:
+            - containerPort: {{ .Values.container.port }}
