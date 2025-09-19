@@ -11,6 +11,18 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     # 指定使用 cert-manager 的 ClusterIssuer (觸發自動申請證書)
     cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuer }}
+    # Socket.IO WebSocket 支援
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/server-snippets: |
+      location ~* /socket\.io/ {
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+      }
 spec:
   # 設定 TLS 憑證
   tls:
@@ -23,7 +35,7 @@ spec:
     - host: {{ .Values.ingress.domain }}
       http:
         paths:
-          # 健康檢查路由
+          # 健康檢查路由（最具體的路徑優先）
           - path: /health
             pathType: Exact
             backend:
@@ -32,7 +44,16 @@ spec:
                 port:
                   number: {{ .Values.service.port }}
           
-          # API 路由
+          # Socket.IO 路由（具體前綴優先於通用前綴）
+          - path: /socket.io
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.service.name }}
+                port:
+                  number: {{ .Values.service.port }}
+          
+          # API 路由（通用前綴放最後）
           - path: /api
             pathType: Prefix
             backend:
