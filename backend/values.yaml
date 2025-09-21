@@ -6,8 +6,8 @@ app:
   replicas: 2
 image:
   repository: ghcr.io/jian11442/joytify-api
-  tag: d91de7a664e168e37c5d2e8db5cce41dc68a62b2
-  digest: "sha256:32d336f1ef089d57dad4bd56049d137dee7204767f30988d5784888abc60f8ea"
+  tag: 6d29bb852cb821ad53aeef31d30c4c5e90f1fc13
+  digest: "sha256:a8c1688a1c5938a5a8d56e9df3c1a7192da506fe4cfdc72f87b58a4cfe5d41a3"
 imagePullSecrets:
   name: ghcr-secret # *
 container:
@@ -53,7 +53,7 @@ externalSecret:
 ingress:
   enabled: true
   domain: "api.joytify.org" # *
-  clusterIssuer: "letsencrypt-staging" # *
+  clusterIssuer: "letsencrypt-prod" # *
 # =============================================================================
 # envs
 # =============================================================================
