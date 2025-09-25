@@ -6,8 +6,8 @@ app:
   replicas: 2
 image:
   repository: ghcr.io/jian11442/joytify-api
-  tag: 9bad54a5c1edcee698fbd54a941a50c6b710048d
-  digest: "sha256:d9e8dc951ae713c31fb7693c507081227e224c587c76229d11dc82c05f05e7e3"
+  tag: 583c81ae4d7bbbf41b1548ce98690f5c5e20e23b
+  digest: "sha256:d4cd90f62bb329c273739afa3422611a405ba2f8740d76f9b278aec92619c9d6"
 imagePullSecrets:
   name: ghcr-secret # *
 container:
